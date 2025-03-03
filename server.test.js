@@ -76,6 +76,7 @@ const totalCombinations = requestBodyParams.reduce(
   1
 );
 
+// NOTICE: This file describe has just POST /submit in it
 describe("POST /submit - Dynamic Permutation Tests", () => {
   afterAll(() => {
     server.close();
