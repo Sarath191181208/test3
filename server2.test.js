@@ -75,7 +75,7 @@ const totalCombinations = requestBodyParams.reduce(
   1
 );
 
-describe("[POST:2] /submit - Dynamic Permutation Tests", () => {
+describe("[POST:2] /submit-v2 - Dynamic Permutation Tests", () => {
   afterAll(() => {
     server.close();
   });

@@ -6,7 +6,7 @@ app.use(express.json()); // Middleware to parse JSON
 
 
 app.post(
-  '/submit2',
+  '/submit-v2',
   [
     body('name')
       .exists({ checkFalsy: true }).withMessage('Name is required')
