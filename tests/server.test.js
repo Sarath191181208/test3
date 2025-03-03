@@ -1,6 +1,6 @@
 const request = require("supertest");
-const { app, server } = require("./server");
-const generateSingleTestCase = require("./generateCombination");
+const { app, server } = require("../src/server");
+const generateSingleTestCase = require("../utils/generateCombination");
 
 const requestBodyParams = [
   {
