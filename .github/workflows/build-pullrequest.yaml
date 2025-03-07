@@ -27,6 +27,6 @@ jobs:
 
       - name: Run Jest on changed files
         run: |
-          chmod +x ./run_tests.sh
-          ./run_tests.sh
+          chmod +x ./scripts/run-diff.sh
+          ./scripts/run-diff.sh
         shell: bash
