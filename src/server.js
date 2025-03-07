@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json()); // Middleware to parse JSON
 
 app.post(
-  "/submit",
+  "/submit2",
   [
     body("name")
       .exists({ checkFalsy: true })
