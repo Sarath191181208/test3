@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # Get the list of changed files compared to the main branch
-CHANGED_FILES=$(git diff --name-only origin/main origin/${GITHUB_HEAD_REF})
+CHANGED_FILES=$(git diff --name-only origin/main "origin/${GITHUB_HEAD_REF}")
 
 # Run Jest only on changed files if there are any
 if [ -n "$CHANGED_FILES" ]; then
