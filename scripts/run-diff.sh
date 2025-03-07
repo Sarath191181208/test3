@@ -1,28 +1,43 @@
 #!/usr/bin/env sh
 
-# Get the current branch
-CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+set -e  # Exit on error
 
-# Get the remote tracking branch i.e origin/main, <custom>/develop etc.
-# But the branch should be set as upstream, otherwise this will fail 
-# TODO: looking for alternatives
-REMOTE_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name "@{u}" 2>/dev/null)
+# Colors for better visibility
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
 
-# If there's no remote tracking branch, exit
-if [ -z "$REMOTE_BRANCH" ]; then
-  echo "No remote tracking branch found for $CURRENT_BRANCH, skipping tests."
-  exit 0
+# Emojis
+CHECK="✅"
+INFO="ℹ️"
+WARN="⚠️"
+ERROR="❌"
+
+# Detect the current branch in GitHub Actions
+echo "${INFO} Detecting current branch..."
+if [ -n "$GITHUB_HEAD_REF" ]; then
+  HEAD_BRANCH="$GITHUB_HEAD_REF"  # For pull requests
+else
+  HEAD_BRANCH="$GITHUB_REF_NAME"  # For push events
 fi
 
-# Get the list of changed files compared to the remote branch
-CHANGED_FILES=$(git diff --name-only "$REMOTE_BRANCH")
+echo "${INFO} Base branch: ${BLUE}origin/main${NC}"
+echo "${INFO} Head branch: ${BLUE}origin/$HEAD_BRANCH${NC}"
 
-# Run Jest only on changed files if there are any
+# Ensure remote branches are up-to-date
+echo "${INFO} Fetching latest branch data..."
+git fetch origin main "$HEAD_BRANCH" --depth=1
+
+echo "${INFO} Checking for changed files..."
+CHANGED_FILES=$(git diff --name-only origin/main "origin/$HEAD_BRANCH")
+
 if [ -n "$CHANGED_FILES" ]; then
-  echo "Running Jest on changed files..."
-  npx jest \
-    --findRelatedTests $CHANGED_FILES \
-    --passWithNoTests # This is to ensure that the script doesn't fail if there are no tests
+  echo "${CHECK} ${GREEN}Changed files in the diff:${NC}"
+  echo "$CHANGED_FILES" | sed 's/^/- /'  # Add bullet points for clarity
+  echo "\n${INFO} Running Jest on changed files..."
+  npx jest --findRelatedTests $CHANGED_FILES --passWithNoTests
 else
-  echo "No changes detected, skipping tests."
+  echo "${WARN} ${YELLOW}No changes detected, skipping tests.${NC}"
 fi
